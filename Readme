@@ -1,0 +1,146 @@
+from pathlib import Path
+import shutil, zipfile, textwrap, os
+
+base = Path("/mnt/data/akash_portfolio")
+assets = base / "assets"
+assets.mkdir(parents=True, exist_ok=True)
+shutil.copy2("/mnt/data/1000675924.jpg", assets / "akash-profile.jpg")
+
+css = r"""
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#172238;--text:#eef2f8;--muted:#aab5c7;--accent:#e6a0a7;--line:rgba(255,255,255,.12);--max:1120px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.65}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+header{height:76px;display:flex;align-items:center;position:relative;z-index:5;background:#0b1020;border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{font:800 1.15rem Manrope,sans-serif;letter-spacing:.02em}.brand span{color:var(--accent)}.navlinks{display:flex;gap:30px;align-items:center}.navlinks a{font-size:.93rem;color:var(--muted);transition:.2s}.navlinks a:hover,.navlinks a.active{color:var(--accent)}
+.menu{display:none;background:none;border:1px solid var(--line);color:white;border-radius:9px;padding:8px 11px;font-size:1.1rem}
+.hero{min-height:calc(100vh - 76px);position:relative;display:flex;align-items:center;overflow:hidden;background:#111827}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,9,18,.91) 0%,rgba(5,9,18,.73) 48%,rgba(5,9,18,.25) 100%),linear-gradient(0deg,rgba(5,9,18,.5),transparent 45%),url('assets/akash-profile.jpg') center 38%/cover no-repeat;filter:saturate(.82)}.hero-content{position:relative;z-index:1;padding:90px 0;max-width:690px}.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.17em;text-transform:uppercase;font-size:.78rem}.hero h1{font:800 clamp(3rem,7vw,5.8rem)/1.04 Manrope,sans-serif;margin:18px 0}.hero h1 span{color:var(--accent)}.hero p{color:#d4dbea;font-size:1.12rem;max-width:590px}.actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 21px;border-radius:8px;background:var(--accent);color:#1a1720;font-weight:700;border:1px solid var(--accent);transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.outline{background:transparent;color:var(--text);border-color:rgba(255,255,255,.45)}
+.pagehead{padding:72px 0 42px;background:radial-gradient(ellipse at 80% 0%,rgba(230,160,167,.13),transparent 45%),#0b1020}.pagehead h1{font:800 clamp(2.4rem,5vw,4rem)/1.1 Manrope,sans-serif;margin:12px 0}.pagehead p{color:var(--muted);max-width:650px;margin:0}.content{padding:10px 0 85px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:27px}.card h2,.card h3{font-family:Manrope,sans-serif;margin:0 0 12px}.card p{color:var(--muted);margin:0}.taglist{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.tag{background:var(--panel2);border:1px solid var(--line);padding:7px 12px;border-radius:999px;color:#dbe3f0;font-size:.88rem}.section-title{font:700 1.45rem Manrope,sans-serif;margin:0 0 18px}.timeline{border-left:2px solid rgba(230,160,167,.6);padding-left:22px;display:grid;gap:22px}.item{position:relative}.item:before{content:"";position:absolute;left:-29px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--accent)}.item h3{margin:0;font:700 1.08rem Manrope,sans-serif}.meta{color:var(--accent);font-size:.9rem;margin:4px 0 8px}.item p{color:var(--muted);margin:0}.project{display:flex;flex-direction:column;gap:9px}.project .meta{margin:0}.contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.contact-link{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:13px;min-width:0}.contact-link:hover{border-color:var(--accent)}.social-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:var(--panel2);color:var(--accent);font-weight:800;font-size:1.1rem;flex:none}.contact-link small{display:block;color:var(--muted)}.contact-link strong{overflow-wrap:anywhere}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.9rem}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.foot-social{display:flex;gap:16px}.foot-social a{color:var(--muted)}.foot-social a:hover{color:var(--accent)}
+@media(max-width:720px){.menu{display:block}.navlinks{display:none;position:absolute;top:76px;left:0;right:0;background:#0b1020;padding:18px 22px 22px;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:17px}.navlinks.open{display:flex}.hero:before{background:linear-gradient(90deg,rgba(5,9,18,.88),rgba(5,9,18,.58)),linear-gradient(0deg,rgba(5,9,18,.35),transparent),url('assets/akash-profile.jpg') 58% center/cover no-repeat}.hero-content{padding:70px 0}.grid,.contact-grid{grid-template-columns:1fr}.pagehead{padding:55px 0 35px}.card{padding:22px}}
+"""
+(base / "styles.css").write_text(css, encoding="utf-8")
+
+js = """
+const menuButton = document.querySelector('.menu');
+const navLinks = document.querySelector('.navlinks');
+if (menuButton && navLinks) {
+  menuButton.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', String(open));
+  });
+}
+"""
+(base / "script.js").write_text(js, encoding="utf-8")
+
+nav = """
+<header><div class="wrap nav">
+  <a class="brand" href="index.html">AKASH<span>.</span></a>
+  <button class="menu" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav class="navlinks">
+    <a href="index.html" {home}>Home</a><a href="about.html" {about}>About</a>
+    <a href="resume.html" {resume}>Resume</a><a href="contact.html" {contact}>Contact</a>
+  </nav>
+</div></header>
+"""
+footer = """
+<footer><div class="wrap foot"><span>© 2026 Akash Gunnalli. Built with purpose.</span>
+<div class="foot-social"><a href="https://www.linkedin.com/in/akash-gunnalli-860557266/" target="_blank" rel="noreferrer">LinkedIn</a><a href="https://github.com/akash_lingayath07" target="_blank" rel="noreferrer">GitHub</a><a href="https://wa.me/918296100789" target="_blank" rel="noreferrer">WhatsApp</a></div></div></footer>
+"""
+def page(title, active, body):
+    flags = {k: ('class="active"' if k == active else '') for k in ['home','about','resume','contact']}
+    header = nav.format(**flags)
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Portfolio of Akash Gunnalli, MCA graduate and aspiring Full Stack Java Developer.">
+<title>{title} | Akash Gunnalli</title><link rel="stylesheet" href="styles.css"></head><body>
+{header}{body}{footer}<script src="script.js"></script></body></html>"""
+
+home = """
+<main class="hero"><div class="wrap hero-content">
+  <div class="eyebrow">Hello, I'm</div>
+  <h1>Akash <span>Gunnalli</span></h1>
+  <p>Full Stack Java Developer | MCA Graduate</p>
+  <p>I enjoy building practical software solutions, exploring modern web technologies, and turning ideas into useful digital experiences.</p>
+  <div class="actions"><a class="btn" href="resume.html">Explore my resume</a><a class="btn outline" href="contact.html">Get in touch</a></div>
+</div></main>
+"""
+(base / "index.html").write_text(page("Home","home",home), encoding="utf-8")
+
+about = """
+<main><section class="pagehead"><div class="wrap"><div class="eyebrow">A little about me</div><h1>About Me</h1><p>Curious, motivated, and always learning — focused on growing as a software developer.</p></div></section>
+<section class="content wrap"><div class="grid">
+ <article class="card"><h2>Who I Am</h2><p>I am an MCA graduate from Atria Institute of Technology, Bengaluru. I have a foundation in Full Stack Java and web technologies, with an interest in software development, databases, and problem-solving. I value continuous learning and enjoy applying technology to real-world challenges.</p></article>
+ <article class="card"><h2>Education</h2><div class="timeline">
+  <div class="item"><h3>Master of Computer Applications (MCA)</h3><div class="meta">2025 · CGPA 6.8</div><p>Atria Institute of Technology, Bengaluru.</p></div>
+  <div class="item"><h3>Bachelor of Science (B.Sc.)</h3><div class="meta">2022 · CGPA 6.5</div><p>Karnataka Arts, Commerce & Science College, Bidar.</p></div>
+  <div class="item"><h3>Pre-University (PUC)</h3><div class="meta">2019 · 71.37%</div><p>Shri CB Gurukula Residential PU Science College, Kardyal, Bhalki.</p></div>
+  <div class="item"><h3>SSLC</h3><div class="meta">2017 · 86.56%</div><p>SNS High School.</p></div>
+ </div></article>
+ <article class="card"><h2>Technical Skills</h2><div class="taglist"><span class="tag">Java</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Git & GitHub</span><span class="tag">VS Code</span><span class="tag">Windows</span><span class="tag">JDBC</span><span class="tag">OOP</span><span class="tag">SQL fundamentals</span></div></article>
+ <article class="card"><h2>Languages</h2><div class="taglist"><span class="tag">English</span><span class="tag">Kannada</span><span class="tag">Hindi</span><span class="tag">Telugu</span></div></article>
+</div></section></main>
+"""
+(base / "about.html").write_text(page("About","about",about), encoding="utf-8")
+
+resume = """
+<main><section class="pagehead"><div class="wrap"><div class="eyebrow">Experience & work</div><h1>My Resume</h1><p>Academic background, practical training, and selected projects.</p></div></section>
+<section class="content wrap"><div class="grid">
+ <article class="card"><h2 class="section-title">Internship</h2><div class="timeline"><div class="item"><h3>Java Programming Intern · CodTech IT Solutions</h3><div class="meta">30 Nov 2024 – 15 Jan 2025 · 8 weeks</div><p>Worked with Core and Advanced Java, OOP, exception handling, collections, multithreading, JDBC, console-based and mini-GUI applications. Practised debugging, clean coding, and version control.</p></div></div></article>
+ <article class="card"><h2 class="section-title">Education</h2><div class="timeline">
+  <div class="item"><h3>MCA · Atria Institute of Technology</h3><div class="meta">2025 · CGPA 6.8</div><p>Bengaluru</p></div>
+  <div class="item"><h3>B.Sc. · Karnataka Arts, Commerce & Science College</h3><div class="meta">2022 · CGPA 6.5</div><p>Bidar</p></div>
+  <div class="item"><h3>PUC · Shri CB Gurukula Residential PU Science College</h3><div class="meta">2019 · 71.37%</div><p>Kardyal, Bhalki, Bidar</p></div>
+  <div class="item"><h3>SSLC · SNS High School</h3><div class="meta">2017 · 86.56%</div></div>
+ </div></article>
+ <article class="card project"><h2>Gesture-Controlled LED Home Automation</h2><div class="meta">IoT · Arduino Uno</div><p>Built a prototype that uses a gesture sensor to switch an LED on or off through hand movements, demonstrating touch-free device control.</p></article>
+ <article class="card project"><h2>Heart Disease Data Analysis</h2><div class="meta">Python · Machine Learning</div><p>Analysed heart disease data through cleaning and exploratory analysis, then compared machine-learning models. Random Forest gave the best accuracy in the project.</p></article>
+ <article class="card project"><h2>Electricity Theft Detection in Smart Grid</h2><div class="meta">Machine Learning · CNN</div><p>Explored a CNN-based approach using time- and frequency-based features, data preprocessing, feature selection, and model tuning to detect electricity theft.</p></article>
+ <article class="card"><h2>Core Strengths</h2><div class="taglist"><span class="tag">Problem solving</span><span class="tag">Analytical thinking</span><span class="tag">Continuous learning</span><span class="tag">Debugging</span><span class="tag">Team collaboration</span></div></article>
+</div></section></main>
+"""
+(base / "resume.html").write_text(page("Resume","resume",resume), encoding="utf-8")
+
+contact = """
+<main><section class="pagehead"><div class="wrap"><div class="eyebrow">Let's connect</div><h1>Contact Me</h1><p>Have an opportunity, collaboration, or project in mind? Feel free to reach out.</p></div></section>
+<section class="content wrap"><div class="contact-grid">
+ <a class="contact-link" href="tel:+918296100789"><span class="social-icon">☎</span><span><small>Phone</small><strong>+91 82961 00789</strong></span></a>
+ <a class="contact-link" href="mailto:guakash070@gmail.com"><span class="social-icon">✉</span><span><small>Email</small><strong>guakash070@gmail.com</strong></span></a>
+ <a class="contact-link" href="https://www.linkedin.com/in/akash-gunnalli-860557266/" target="_blank" rel="noreferrer"><span class="social-icon">in</span><span><small>LinkedIn</small><strong>Akash Gunnalli</strong></span></a>
+ <a class="contact-link" href="https://github.com/akash_lingayath07" target="_blank" rel="noreferrer"><span class="social-icon">⌘</span><span><small>GitHub</small><strong>akash_lingayath07</strong></span></a>
+ <a class="contact-link" href="https://wa.me/918296100789" target="_blank" rel="noreferrer"><span class="social-icon">◉</span><span><small>WhatsApp</small><strong>Chat with me</strong></span></a>
+ <a class="contact-link" href="https://www.instagram.com/" target="_blank" rel="noreferrer"><span class="social-icon">◎</span><span><small>Instagram</small><strong>Add your profile link</strong></span></a>
+ <a class="contact-link" href="https://www.facebook.com/" target="_blank" rel="noreferrer"><span class="social-icon">f</span><span><small>Facebook</small><strong>Add your profile link</strong></span></a>
+</div><p style="color:var(--muted);margin-top:22px">Instagram and Facebook currently point to their homepages. Replace these with your personal profile URLs before publishing.</p></section></main>
+"""
+(base / "contact.html").write_text(page("Contact","contact",contact), encoding="utf-8")
+
+readme = """# Akash Gunnalli — Personal Portfolio
+
+## Pages
+- `index.html` — Home page with the supplied photograph as a darkened background
+- `about.html` — Introduction, education, skills, languages
+- `resume.html` — Internship, education, and academic projects
+- `contact.html` — Phone, email, and social links
+
+## Preview locally
+Open `index.html` in a browser. Keep `styles.css`, `script.js`, and the `assets` folder alongside the HTML files.
+
+## Publish with GitHub Pages
+1. Create or open the repository `akash-profile`.
+2. Upload all files and the `assets` folder to the repository root.
+3. In GitHub, open Settings → Pages.
+4. Select Deploy from a branch, choose `main` and `/ (root)`, then Save.
+5. Your site can be published at `https://akashgunnalli.github.io/akash-profile/`.
+
+## Before publishing
+Update Instagram and Facebook links in `contact.html` to your personal profile URLs. Check your GitHub username/link is correct.
+"""
+(base / "README.md").write_text(readme, encoding="utf-8")
+
+zip_path = Path("/mnt/data/Akash_Gunnalli_Portfolio.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for f in base.rglob("*"):
+        if f.is_file():
+            z.write(f, f.relative_to(base.parent))
+print(f"Created {zip_path} ({zip_path.stat().st_size:,} bytes)")
+                 
